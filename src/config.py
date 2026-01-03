@@ -6,17 +6,7 @@ from typing import Any, Mapping
 
 import json
 
-def _as_int_list(x: Any) -> tuple[int, ...]:
-    if x is None:
-        return tuple()
-    
-    if isinstance(x, int):
-        return (x,)
-    
-    if isinstance(x, (list, tuple)):
-        return tuple(int(v) for v in x)
-    
-    raise TypeError(f"Expected int or list/tuple of ints, got: {type(x)}")
+from utils import _as_int_list
 
 @dataclass(frozen=True, slots=True)
 class Config:
@@ -39,7 +29,6 @@ class Config:
     # RoPE
     rope_theta: float
     rope_scaling: Mapping[str, Any] | None
-    rope_type: str | None
 
     # Special tokens
     bos_token_id: int | None
@@ -69,7 +58,6 @@ class Config:
 
         rope_theta = float(raw["rope_theta"])
         rope_scaling = raw["rope_scaling"]
-        rope_type = raw["rope_type"]
 
         bos_token_id = raw["bos_token_id"]
         eos_token_ids = _as_int_list(raw["eos_token_id"])
@@ -94,7 +82,6 @@ class Config:
             rms_norm_eps=rms_norm_eps,
             rope_theta=rope_theta,
             rope_scaling=rope_scaling,
-            rope_type=rope_type,
             bos_token_id=int(bos_token_id) if bos_token_id is not None else None,
             eos_token_ids=eos_token_ids,
             head_dim=head_dim,
